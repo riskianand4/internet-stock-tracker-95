@@ -1,20 +1,23 @@
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useApp } from '@/contexts/AppContext';
 import ModernLoginPage from '@/components/auth/ModernLoginPage';
 import MainLayout from '@/components/layout/MainLayout';
 import AdvancedStatsOverview from '@/components/dashboard/AdvancedStatsOverview';
+import { ErrorBoundary } from '@/components/feedback/ErrorBoundary';
 
 const StatsPage = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useApp();
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return <ModernLoginPage />;
   }
 
   return (
-    <MainLayout>
-      <AdvancedStatsOverview />
-    </MainLayout>
+    <ErrorBoundary>
+      <MainLayout>
+        <AdvancedStatsOverview />
+      </MainLayout>
+    </ErrorBoundary>
   );
 };
 

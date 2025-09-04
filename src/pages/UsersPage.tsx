@@ -15,12 +15,13 @@ import {
   Search, Plus, Download, Upload, Users, UserCheck, 
   UserX, Shield, Eye, Edit, Trash2, Activity, Lock, Unlock
 } from 'lucide-react';
-// Mock data removed - now using API data
-import { useAuth } from '@/contexts/AuthContext';
+import { useApp } from '@/contexts/AppContext';
 import { useUsers } from '@/hooks/useApiData';
+import ModernLoginPage from '@/components/auth/ModernLoginPage';
+import { ErrorBoundary } from '@/components/feedback/ErrorBoundary';
 
 export default function UsersPage() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useApp();
   const { users, loading, error } = useUsers();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
@@ -30,9 +31,14 @@ export default function UsersPage() {
   const [userToDelete, setUserToDelete] = useState<any>(null);
 
   // Only super_admin can access this page
+  if (!isAuthenticated || !user) {
+    return <ModernLoginPage />;
+  }
+  
   if (user?.role !== 'super_admin') {
     return (
-      <MainLayout>
+      <ErrorBoundary>
+        <MainLayout>
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <Shield className="w-16 h-16 text-muted-foreground mb-4 mx-auto" />
@@ -41,6 +47,7 @@ export default function UsersPage() {
           </div>
         </div>
       </MainLayout>
+      </ErrorBoundary>
     );
   }
 
@@ -88,7 +95,8 @@ export default function UsersPage() {
   const recentActivities = mockUserActivities.slice(0, 10);
 
   return (
-    <MainLayout>
+    <ErrorBoundary>
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <motion.div 
@@ -553,5 +561,6 @@ export default function UsersPage() {
         </Dialog>
       </div>
     </MainLayout>
+    </ErrorBoundary>
   );
 }

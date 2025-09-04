@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import MainLayout from '@/components/layout/MainLayout';
+import ModernLoginPage from '@/components/auth/ModernLoginPage';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,14 +17,13 @@ import {
   Shield, Bell, Plug, Eye, Edit, Trash2, RefreshCw
 } from 'lucide-react';
 import { settingsApi } from '@/services/settingsApi';
-import { useAuth } from '@/contexts/AuthContext';
-import { useApi } from '@/contexts/ApiContext';
+import { useApp } from '@/contexts/AppContext';
 import ApiConfiguration from '@/components/settings/ApiConfiguration';
 import ApiSetupGuide from '@/components/setup/ApiSetupGuide';
+import { ErrorBoundary } from '@/components/feedback/ErrorBoundary';
 
 export default function SettingsPage() {
-  const { user } = useAuth();
-  const { isConfigured, isOnline } = useApi();
+  const { user, isAuthenticated, isConfigured, isOnline } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('general');
   const [systemSettings, setSystemSettings] = useState<any[]>([]);
@@ -80,8 +80,13 @@ export default function SettingsPage() {
     }
   };
 
+  if (!isAuthenticated || !user) {
+    return <ModernLoginPage />;
+  }
+
   return (
-    <MainLayout>
+    <ErrorBoundary>
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <motion.div 
@@ -354,5 +359,6 @@ export default function SettingsPage() {
         </motion.div>
       </div>
     </MainLayout>
+    </ErrorBoundary>
   );
 }

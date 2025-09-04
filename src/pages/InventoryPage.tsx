@@ -1,14 +1,15 @@
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useApp } from '@/contexts/AppContext';
 import ModernLoginPage from '@/components/auth/ModernLoginPage';
 import MainLayout from '@/components/layout/MainLayout';
 import InventoryOverview from '@/components/inventory/InventoryOverview';
 import { motion } from 'framer-motion';
+import { ErrorBoundary } from '@/components/feedback/ErrorBoundary';
 
 const InventoryPage = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useApp();
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return <ModernLoginPage />;
   }
 
@@ -18,7 +19,8 @@ const InventoryPage = () => {
   };
 
   return (
-    <MainLayout>
+    <ErrorBoundary>
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <motion.div 
@@ -37,6 +39,7 @@ const InventoryPage = () => {
         <InventoryOverview onStockAdjustment={handleStockAdjustment} />
       </div>
     </MainLayout>
+    </ErrorBoundary>
   );
 };
 
