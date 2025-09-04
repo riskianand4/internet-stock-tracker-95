@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/contexts/AppContext";
 import { ScrollRestoration } from "./components/ScrollRestoration";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
@@ -36,10 +36,9 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-          <BrowserRouter>
-            <ScrollRestoration />
-            <AppProvider>
-                <Routes>
+        <ScrollRestoration />
+        <AppProvider>
+          <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/products" element={<ProductsPage />} />
@@ -61,9 +60,8 @@ const App = () => (
             <Route path="/stock-report" element={<StockReportPage />} />
             <Route path="/more" element={<MorePage />} />
             <Route path="*" element={<NotFound />} />
-                </Routes>
-            </AppProvider>
-          </BrowserRouter>
+          </Routes>
+        </AppProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </ErrorBoundary>
